@@ -1,0 +1,21 @@
+--- a/Makefile.in	2017-10-22 23:55:21.000000000 -0600
++++ b/Makefile-new.in	2017-11-10 11:52:58.678038658 -0600
+@@ -10,8 +10,7 @@
+ 	tools/EventClients
+ 
+ DVDPCODECS_DIRS= \
+-	lib \
+-	lib/libdvd
++	lib
+ 
+ VideoPlayer_ARCHIVES=xbmc/cores/VideoPlayer/VideoPlayer.a \
+                    xbmc/cores/VideoPlayer/DVDCodecs/DVDCodecs.a \
+@@ -351,7 +350,7 @@
+ 	$(MAKE) -C lib/addons/library.xbmc.pvr
+ 	$(MAKE) -C lib/addons/library.kodi.inputstream
+ dvdpcodecs: dllloader
+-	$(MAKE) -C lib/libdvd
++
+ 
+ dvdpextcodecs:
+ 
