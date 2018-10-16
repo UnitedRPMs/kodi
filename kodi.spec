@@ -277,9 +277,20 @@ This package contains FirewallD files for Kodi.
 
 %{S:2} -c %{commit0}
 
-%setup -T -D -n kodi-%{shortcommit0}
+%autosetup -T -D -n kodi-%{shortcommit0}
+
+# Python fix
+sed -i 's|PYTHON_LIB_PATH|%{python2_sitelib}|g' cmake/scripts/linux/Install.cmake
+
+# python2 fix
+mkdir -p "$HOME/bin/"
+ln -sfn /usr/bin/python2.7 $HOME/bin/python
+export PATH="$HOME/bin/:$PATH"
 
 %build
+
+# python2 fix
+export PATH="$HOME/bin/:$PATH"
 
 # https://bugs.gentoo.org/show_bug.cgi?id=606124
 cmake  -DCMAKE_INSTALL_PREFIX=/usr \
@@ -340,6 +351,34 @@ make install DESTDIR=%{buildroot}
 # Move man-pages into system dir
 mkdir -p ${RPM_BUILD_ROOT}%{_mandir}/
 mv docs/manpages ${RPM_BUILD_ROOT}%{_mandir}/man1/
+
+# Mangling fix
+sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/bin/kodi-ps3remote
+sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/bin/kodi-send
+sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_button2.py
+sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_notification.py
+sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_mouse.py
+sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_action.py
+sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_button1.py
+sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_simple.py
+sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/%{python2_sitelib}/kodi/ps3/sixpair.py
+sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/%{python2_sitelib}/kodi/ps3/sixaxis.py
+sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/%{python2_sitelib}/kodi/ps3/sixwatch.py
+sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/%{python2_sitelib}/kodi/xbmcclient.py
+sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/%{python2_sitelib}/kodi/zeroconf.py
+sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/%{python2_sitelib}/kodi/ps3_remote.py
+sed -i 's|/usr/bin/env python|/usr/bin/python2|g' %{buildroot}/%{python2_sitelib}/kodi/zeroconf.py
+
+sed -i 's|/bin/sh|/usr/bin/sh|g' %{buildroot}/usr/bin/kodi
+sed -i 's|/bin/sh|/usr/bin/sh|g' %{buildroot}/usr/bin/kodi-standalone
+
+sed -i '1 i\#!/usr/bin/python2'  %{buildroot}/%{python2_sitelib}/kodi/bt/__init__.py
+sed -i '1 i\#!/usr/bin/python2'  %{buildroot}/%{python2_sitelib}/kodi/bt/bt.py
+sed -i '1 i\#!/usr/bin/python2'  %{buildroot}/%{python2_sitelib}/kodi/bt/hid.py
+sed -i '1 i\#!/usr/bin/python2'  %{buildroot}/%{python2_sitelib}/kodi/ps3/__init__.py
+sed -i '1 i\#!/usr/bin/python2'  %{buildroot}/%{python2_sitelib}/kodi/ps3/keymaps.py
+sed -i '1 i\#!/usr/bin/python2'  %{buildroot}/%{python2_sitelib}/kodi/__init__.py
+sed -i '1 i\#!/usr/bin/python2'  %{buildroot}/%{python2_sitelib}/kodi/defs.py
 
 %post
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
