@@ -2,7 +2,7 @@
 # https://www.archlinux.org/packages/community/x86_64/kodi/
 # https://gitweb.gentoo.org/repo/gentoo.git/tree/media-tv/kodi
 %global  _firewalldpath   /usr/lib/firewalld/services
-%global commit0 c2e1b316f5679540f68ea37cba84d1bc2046b71b
+%global commit0 5c2918003cc74bd96ab223255c59bf7aaf64b31f
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 %global gver .git%{shortcommit0}
 
@@ -10,7 +10,7 @@
 
 Name: kodi
 Version: 18.0
-Release: 0.37%{?gver}%{dist}
+Release: 0.38%{?gver}%{dist}
 Epoch: 1
 Summary: Media center
 
@@ -20,7 +20,7 @@ License: GPLv2+ and GPLv3+ and LGPLv2+ and BSD and MIT
 Group: Applications/Multimedia
 URL: http://www.kodi.tv/
 Source0: https://github.com/xbmc/xbmc/archive/%{commit0}.tar.gz#/%{name}-%{shortcommit0}.tar.gz
-Source1: https://github.com/xbmc/FFmpeg/archive/4.0.2-Leia-Alpha3.tar.gz
+Source1: https://github.com/xbmc/FFmpeg/archive/4.0.3-Leia-Beta5.tar.gz
 Source2: kodi-snapshot
 
 %global _with_libbluray 1
@@ -448,6 +448,9 @@ fi
 
 
 %changelog
+
+* Tue Nov 06 2018 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.0-0.38.git5c29180  
+- Updated to RC1
 
 * Fri Oct 12 2018 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.0-0.37.gitc2e1b31  
 - Updated to current commit
