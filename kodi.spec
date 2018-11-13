@@ -2,7 +2,7 @@
 # https://www.archlinux.org/packages/community/x86_64/kodi/
 # https://gitweb.gentoo.org/repo/gentoo.git/tree/media-tv/kodi
 %global  _firewalldpath   /usr/lib/firewalld/services
-%global commit0 5c2918003cc74bd96ab223255c59bf7aaf64b31f
+%global commit0 e759ef620c108270753348ca409c76d19d2878fd
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 %global gver .git%{shortcommit0}
 
@@ -10,7 +10,7 @@
 
 Name: kodi
 Version: 18.0
-Release: 0.38%{?gver}%{dist}
+Release: 0.39%{?gver}%{dist}
 Epoch: 1
 Summary: Media center
 
@@ -22,6 +22,7 @@ URL: http://www.kodi.tv/
 Source0: https://github.com/xbmc/xbmc/archive/%{commit0}.tar.gz#/%{name}-%{shortcommit0}.tar.gz
 Source1: https://github.com/xbmc/FFmpeg/archive/4.0.3-Leia-Beta5.tar.gz
 Source2: kodi-snapshot
+Patch: smb_fix.patch
 
 %global _with_libbluray 1
 %global _with_cwiid 1
@@ -277,7 +278,7 @@ This package contains FirewallD files for Kodi.
 
 %{S:2} -c %{commit0}
 
-%autosetup -T -D -n kodi-%{shortcommit0}
+%autosetup -T -D -n kodi-%{shortcommit0} -p1
 
 # Python fix
 sed -i 's|PYTHON_LIB_PATH|%{python2_sitelib}|g' cmake/scripts/linux/Install.cmake
@@ -448,6 +449,10 @@ fi
 
 
 %changelog
+
+* Tue Nov 13 2018 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.0-0.39.gite759ef6  
+- Updated to current commit
+- Added patch to fix SMB crash
 
 * Tue Nov 06 2018 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.0-0.38.git5c29180  
 - Updated to RC1
