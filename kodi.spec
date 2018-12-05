@@ -10,7 +10,7 @@
 
 Name: kodi
 Version: 18.0
-Release: 0.40%{?gver}%{dist}
+Release: 0.41%{?gver}%{dist}
 Epoch: 1
 Summary: Media center
 
@@ -167,7 +167,11 @@ BuildRequires: zlib-devel
 BuildRequires: giflib-devel
 
 # new buildrequires
+%if 0%{?fedora} >= 28
+BuildRequires: fmt-devel >= 5.2.1
+%else
 BuildRequires: fmt-devel
+%endif
 BuildRequires: rapidjson-devel
 BuildRequires: afpfs-ng-devel
 BuildRequires: nss-mdns
@@ -449,6 +453,9 @@ fi
 
 
 %changelog
+
+* Wed Dec 05 2018 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.0-0.41.git812855d 
+- Rebuilt for fmt
 
 * Mon Dec 03 2018 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.0-0.40.git812855d 
 - Updated to RC2
