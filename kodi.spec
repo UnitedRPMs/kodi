@@ -27,10 +27,13 @@ Patch: smb_fix.patch
 %global _with_libbluray 1
 %global _with_cwiid 1
 %global _with_libssh 1
-%if 0%{?fedora} >= 24
 %global _with_libcec 1
-%endif
 %global _with_external_ffmpeg 0
+%if 0%{?fedora} >= 28
+%global _with_internal_fmt 0
+%else
+%global _with_internal_fmt 1
+%endif
 %global _with_wayland 0
 
 
@@ -167,10 +170,8 @@ BuildRequires: zlib-devel
 BuildRequires: giflib-devel
 
 # new buildrequires
-%if 0%{?fedora} >= 28
-BuildRequires: fmt-devel >= 5.2.1
-%else
-BuildRequires: fmt-devel
+%if 0%{?_with_internal_fmt}
+BuildRequires: fmt-devel 
 %endif
 BuildRequires: rapidjson-devel
 BuildRequires: afpfs-ng-devel
@@ -341,6 +342,9 @@ cmake  -DCMAKE_INSTALL_PREFIX=/usr \
        -DENABLE_INTERNAL_FFMPEG="yes" \
 %endif
        -DVERBOSE=0 \
+%if 0%{?_with_internal_fmt}
+       -DENABLE_INTERNAL_FMT=ON \
+%endif
        -DENABLE_XSLT=ON .
 
 make %{?_smp_mflags} VERBOSE=0
@@ -455,7 +459,7 @@ fi
 %changelog
 
 * Wed Dec 05 2018 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.0-0.41.git812855d 
-- Rebuilt for fmt
+- Rebuilt for fmt, enabled conditional for compatibility
 
 * Mon Dec 03 2018 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.0-0.40.git812855d 
 - Updated to RC2
