@@ -285,6 +285,9 @@ This package contains FirewallD files for Kodi.
 
 %autosetup -T -D -n kodi-%{shortcommit0} -p1
 
+# fmt fix
+sed -i 's|-DCMAKE_INSTALL_LIBDIR=lib"|-DCMAKE_INSTALL_LIBDIR=%{_lib}|g' cmake/modules/FindFmt.cmake
+
 # Python fix
 sed -i 's|PYTHON_LIB_PATH|%{python2_sitelib}|g' cmake/scripts/linux/Install.cmake
 
