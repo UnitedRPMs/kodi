@@ -31,7 +31,6 @@ Patch: smb_fix.patch
 %global _with_libcec 1
 %global _with_internal_ffmpeg 0
 %global _with_internal_fmt 0
-%endif
 %global _with_wayland 0
 
 
