@@ -8,6 +8,8 @@
 
 %global debug_package %{nil}
 
+%global _fmt_version 3.0.1
+
 Name: kodi
 Version: 18.0
 Release: 0.41%{?gver}%{dist}
@@ -22,7 +24,7 @@ URL: http://www.kodi.tv/
 Source0: https://github.com/xbmc/xbmc/archive/%{commit0}.tar.gz#/%{name}-%{shortcommit0}.tar.gz
 Source1: https://github.com/xbmc/FFmpeg/archive/4.0.3-Leia-Beta5.tar.gz
 Source2: kodi-snapshot
-Source3: https://github.com/fmtlib/fmt/archive/3.0.1.tar.gz
+Source3: http://mirrors.kodi.tv/build-deps/sources/fmt-%{_fmt_version}.tar.gz
 Patch: smb_fix.patch
 
 %global _with_libbluray 1
@@ -30,7 +32,7 @@ Patch: smb_fix.patch
 %global _with_libssh 1
 %global _with_libcec 1
 %global _with_internal_ffmpeg 0
-%global _with_internal_fmt 0
+%global _with_internal_fmt 1
 %global _with_wayland 0
 
 
@@ -167,9 +169,8 @@ BuildRequires: zlib-devel
 BuildRequires: giflib-devel
 
 # new buildrequires
-%if 0%{!?_with_internal_fmt}
+# Why the internal fmt needs a configuration file installed? bug detected!
 BuildRequires: fmt-devel 
-%endif
 BuildRequires: rapidjson-devel
 BuildRequires: afpfs-ng-devel
 BuildRequires: nss-mdns
@@ -343,8 +344,8 @@ cmake  -DCMAKE_INSTALL_PREFIX=/usr \
 %endif
        -DVERBOSE=0 \
 %if 0%{?_with_internal_fmt}
-       -DENABLE_INTERNAL_FMT=ON \
        -DFMT_URL=%{S:3} \
+       -DENABLE_INTERNAL_FMT=ON \
 %endif
        -DENABLE_XSLT=ON .
 
