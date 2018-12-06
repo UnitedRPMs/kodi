@@ -167,7 +167,7 @@ BuildRequires: zlib-devel
 BuildRequires: giflib-devel
 
 # new buildrequires
-%if 0%{?_with_internal_fmt}
+%if 0%{!?_with_internal_fmt}
 BuildRequires: fmt-devel 
 %endif
 BuildRequires: rapidjson-devel
