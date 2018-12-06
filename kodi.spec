@@ -22,17 +22,15 @@ URL: http://www.kodi.tv/
 Source0: https://github.com/xbmc/xbmc/archive/%{commit0}.tar.gz#/%{name}-%{shortcommit0}.tar.gz
 Source1: https://github.com/xbmc/FFmpeg/archive/4.0.3-Leia-Beta5.tar.gz
 Source2: kodi-snapshot
+Source3: https://github.com/fmtlib/fmt/archive/3.0.1.tar.gz
 Patch: smb_fix.patch
 
 %global _with_libbluray 1
 %global _with_cwiid 1
 %global _with_libssh 1
 %global _with_libcec 1
-%global _with_external_ffmpeg 0
-%if 0%{?fedora} >= 28
+%global _with_internal_ffmpeg 0
 %global _with_internal_fmt 0
-%else
-%global _with_internal_fmt 1
 %endif
 %global _with_wayland 0
 
@@ -66,7 +64,7 @@ BuildRequires: e2fsprogs-devel
 BuildRequires: enca-devel
 BuildRequires: expat-devel
 BuildRequires: faad2-devel
-%if 0%{?_with_external_ffmpeg}
+%if 0%{?_with_internal_ffmpeg}
 BuildRequires: ffmpeg-devel >= 4.0
 %endif
 BuildRequires: flac-devel
@@ -337,7 +335,7 @@ cmake  -DCMAKE_INSTALL_PREFIX=/usr \
        -DENABLE_VAAPI=ON \
        -DENABLE_VDPAU=ON \
        -DENABLE_X11=ON \
-%if 0%{?_with_external_ffmpeg}
+%if 0%{?_with_internal_ffmpeg}
        -DWITH_FFMPEG="yes" \
        -DENABLE_INTERNAL_FFMPEG="no" \
 %else
@@ -347,6 +345,7 @@ cmake  -DCMAKE_INSTALL_PREFIX=/usr \
        -DVERBOSE=0 \
 %if 0%{?_with_internal_fmt}
        -DENABLE_INTERNAL_FMT=ON \
+       -DFMT_URL=%{S:3} \
 %endif
        -DENABLE_XSLT=ON .
 
