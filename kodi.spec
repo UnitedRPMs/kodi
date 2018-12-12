@@ -2,7 +2,7 @@
 # https://www.archlinux.org/packages/community/x86_64/kodi/
 # https://gitweb.gentoo.org/repo/gentoo.git/tree/media-tv/kodi
 %global  _firewalldpath   /usr/lib/firewalld/services
-%global commit0 812855d84e721531fc6be222dc8d37067d1bb8fb
+%global commit0 828cdaece09c8d1cf135b6c49b7ad71ebe1053ac
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 %global gver .git%{shortcommit0}
 
@@ -12,7 +12,7 @@
 
 Name: kodi
 Version: 18.0
-Release: 0.41%{?gver}%{dist}
+Release: 0.42%{?gver}%{dist}
 Epoch: 1
 Summary: Media center
 
@@ -459,6 +459,9 @@ fi
 
 
 %changelog
+
+* Mon Dec 10 2018 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.0-0.42.git828cdae
+- Updated to RC3
 
 * Wed Dec 05 2018 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.0-0.41.git812855d 
 - Rebuilt for fmt, enabled conditional for compatibility
