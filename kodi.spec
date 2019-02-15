@@ -12,7 +12,7 @@
 
 Name: kodi
 Version: 18.0
-Release: 1%{?gver}%{dist}
+Release: 2%{?gver}%{dist}
 Epoch: 1
 Summary: Media center
 
@@ -133,6 +133,7 @@ BuildRequires: libuuid-devel
 BuildRequires: libva-devel
 BuildRequires: libvdpau-devel
 %endif
+BuildRequires: libunistring-devel
 BuildRequires: libvorbis-devel
 %if 0%{?_with_wayland}
 BuildRequires: libwayland-client-devel
@@ -459,6 +460,9 @@ fi
 
 
 %changelog
+
+* Fri Feb 15 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.0-2.gitd81c34c
+- Automatic rebuilt
 
 * Wed Feb 06 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.0-1.gitd81c34c
 - Updated to stable
