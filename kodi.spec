@@ -2,7 +2,7 @@
 # https://www.archlinux.org/packages/community/x86_64/kodi/
 # https://gitweb.gentoo.org/repo/gentoo.git/tree/media-tv/kodi
 %global  _firewalldpath   /usr/lib/firewalld/services
-%global commit0 8cfdc895f3678fc56aef221711b58854cd761378
+%global commit0 f2643566d0fe86534aa6732cc5c95ede220705c5
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 %global gver .git%{shortcommit0}
 
@@ -11,7 +11,7 @@
 %global _fmt_version 3.0.1
 
 Name: kodi
-Version: 18.1
+Version: 18.2
 Release: 2%{?gver}%{dist}
 Epoch: 1
 Summary: Media center
@@ -22,7 +22,7 @@ License: GPLv2+ and GPLv3+ and LGPLv2+ and BSD and MIT
 Group: Applications/Multimedia
 URL: http://www.kodi.tv/
 Source0: https://github.com/xbmc/xbmc/archive/%{commit0}.tar.gz#/%{name}-%{shortcommit0}.tar.gz
-Source1: https://github.com/xbmc/FFmpeg/archive/4.0.3-Leia-RC5.tar.gz
+Source1: https://github.com/xbmc/FFmpeg/archive/4.0.3-Leia-18.2.tar.gz
 Source2: kodi-snapshot
 Source3: http://mirrors.kodi.tv/build-deps/sources/fmt-%{_fmt_version}.tar.gz
 Patch: smb_fix.patch
@@ -460,6 +460,9 @@ fi
 
 
 %changelog
+
+* Mon Apr 22 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.2-2.gitf264356
+- Updated to 18.2-2.gitf264356
 
 * Mon Feb 18 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.1-2.git8cfdc89
 - Updated to 18.1-2.git8cfdc89
