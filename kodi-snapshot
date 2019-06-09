@@ -5,7 +5,7 @@ readargs() {
     case "$1" in
        -c)
         if [ "$2" ] ; then
-          commit="$2"
+          codename="$2"
           shift ; shift
         else
           echo "Missing a value for $1."
@@ -28,16 +28,15 @@ exit
 
 #  BEGIN THE PROGRAM
 readargs "$@"
-shortcommit=$( echo ${commit} | cut -c 1-7)
-name=kodi
+name=xbmc
 
-rm -rf ${name}-${shortcommit}/
-rm -f ${name}-${shortcommit}.tar.gz
-git clone --depth 1 https://github.com/xbmc/xbmc.git ${name}-${shortcommit}
-#svn export https://github.com/videolan/vlc/trunk/ ${name}-${shortcommit}
-pushd ${name}-${shortcommit}
-git checkout --force "${commit}" 
+rm -rf ${name}-${codename}/
+rm -f ${name}-${codename}.tar.gz
+git clone --depth 1 https://github.com/xbmc/xbmc.git ${name}-${codename} 
+pushd ${name}-${codename}
+git checkout --force 18.2-Leia 
 echo "You are in Commit: $( git rev-parse HEAD )"
+git submodule init && git submodule update
 popd
-tar -cvzf ${name}-${shortcommit}.tar.gz ${name}-${shortcommit}
+tar -cvzf ${name}-${codename}.tar.gz ${name}-${codename}
 

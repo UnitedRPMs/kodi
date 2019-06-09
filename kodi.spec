@@ -2,17 +2,15 @@
 # https://www.archlinux.org/packages/community/x86_64/kodi/
 # https://gitweb.gentoo.org/repo/gentoo.git/tree/media-tv/kodi
 %global  _firewalldpath   /usr/lib/firewalld/services
-%global commit0 f2643566d0fe86534aa6732cc5c95ede220705c5
-%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
-%global gver .git%{shortcommit0}
+%global codename 18.2-Leia
 
-%global debug_package %{nil}
+%global debug_package %{nil} 
 
 %global _fmt_version 3.0.1
 
 Name: kodi
 Version: 18.2
-Release: 2%{?gver}%{dist}
+Release: 3%{dist}
 Epoch: 1
 Summary: Media center
 
@@ -21,8 +19,8 @@ License: GPLv2+ and GPLv3+ and LGPLv2+ and BSD and MIT
 # Some supporting libraries use the LGPL / BSD / MIT license
 Group: Applications/Multimedia
 URL: http://www.kodi.tv/
-Source0: https://github.com/xbmc/xbmc/archive/%{commit0}.tar.gz#/%{name}-%{shortcommit0}.tar.gz
-Source1: https://github.com/xbmc/FFmpeg/archive/4.0.3-Leia-18.2.tar.gz
+Source0: https://github.com/xbmc/xbmc/archive/%{version}-Leia.tar.gz
+Source1: https://github.com/xbmc/FFmpeg/archive/4.0.3-Leia-%{version}.tar.gz
 Source2: kodi-snapshot
 Source3: http://mirrors.kodi.tv/build-deps/sources/fmt-%{_fmt_version}.tar.gz
 Patch: smb_fix.patch
@@ -57,7 +55,7 @@ BuildRequires: bzip2-devel
 BuildRequires: cmake
 BuildRequires: crossguid-devel
 %if 0%{?_with_cwiid}
-BuildRequires: cwiid-devel
+BuildRequires: cwiid-devel >= 3.0.0
 %endif
 BuildRequires: dbus-devel
 BuildRequires: desktop-file-utils
@@ -280,9 +278,9 @@ This package contains FirewallD files for Kodi.
 # Our trick; the tarball doesn't download completely the source code; kodi needs some data from .git
 # the script makes it for us.
 
-%{S:2} -c %{commit0}
+%{S:2} -c %{codename}
 
-%autosetup -T -D -n kodi-%{shortcommit0} -p1
+%autosetup -T -D -n xbmc-%{codename} -p1
 
 # fmt fix
 sed -i 's|-DCMAKE_INSTALL_LIBDIR=lib"|-DCMAKE_INSTALL_LIBDIR=%{_lib}|g' cmake/modules/FindFmt.cmake
@@ -460,6 +458,9 @@ fi
 
 
 %changelog
+
+* Sun Jun 09 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.2-3
+- Rebuilt for cwiid
 
 * Mon Apr 22 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.2-2.gitf264356
 - Updated to 18.2-2.gitf264356
