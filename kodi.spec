@@ -2,15 +2,15 @@
 # https://www.archlinux.org/packages/community/x86_64/kodi/
 # https://gitweb.gentoo.org/repo/gentoo.git/tree/media-tv/kodi
 %global  _firewalldpath   /usr/lib/firewalld/services
-%global codename 18.2-Leia
+%global codename Leia
 
 %global debug_package %{nil} 
 
 %global _fmt_version 3.0.1
 
 Name: kodi
-Version: 18.2
-Release: 4%{dist}
+Version: 18.3
+Release: 7%{dist}
 Epoch: 1
 Summary: Media center
 
@@ -19,8 +19,8 @@ License: GPLv2+ and GPLv3+ and LGPLv2+ and BSD and MIT
 # Some supporting libraries use the LGPL / BSD / MIT license
 Group: Applications/Multimedia
 URL: http://www.kodi.tv/
-Source0: https://github.com/xbmc/xbmc/archive/%{version}-Leia.tar.gz 
-Source1: https://github.com/xbmc/FFmpeg/archive/4.0.3-Leia-%{version}.tar.gz
+Source0: https://github.com/xbmc/xbmc/archive/%{version}-%{codename}.tar.gz
+Source1: https://github.com/xbmc/FFmpeg/archive/4.0.3-%{codename}-18.2.tar.gz
 Source2: kodi-snapshot
 Source3: http://mirrors.kodi.tv/build-deps/sources/fmt-%{_fmt_version}.tar.gz
 Patch: smb_fix.patch
@@ -275,7 +275,7 @@ This package contains FirewallD files for Kodi.
 
 %prep
 
-%autosetup -n xbmc-%{codename} -p1  
+%autosetup -n xbmc-%{version}-%{codename} -p1  
 
 # fmt fix
 sed -i 's|-DCMAKE_INSTALL_LIBDIR=lib"|-DCMAKE_INSTALL_LIBDIR=%{_lib}|g' cmake/modules/FindFmt.cmake
@@ -453,6 +453,12 @@ fi
 
 
 %changelog
+
+* Tue Jun 25 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.3-7
+- Updated to 18.3
+
+* Sat Jun 22 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.2-5
+- Rebuilt for x265
 
 * Mon Jun 10 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.2-4
 - Release fix
