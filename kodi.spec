@@ -9,7 +9,7 @@
 %global _fmt_version 3.0.1
 
 Name: kodi
-Version: 18.3
+Version: 18.4
 Release: 7%{dist}
 Epoch: 1
 Summary: Media center
@@ -20,7 +20,7 @@ License: GPLv2+ and GPLv3+ and LGPLv2+ and BSD and MIT
 Group: Applications/Multimedia
 URL: http://www.kodi.tv/
 Source0: https://github.com/xbmc/xbmc/archive/%{version}-%{codename}.tar.gz
-Source1: https://github.com/xbmc/FFmpeg/archive/4.0.3-%{codename}-18.2.tar.gz
+Source1: https://github.com/xbmc/FFmpeg/archive/4.0.4-%{codename}-18.4.tar.gz 
 Source2: kodi-snapshot
 Source3: http://mirrors.kodi.tv/build-deps/sources/fmt-%{_fmt_version}.tar.gz
 Patch: smb_fix.patch
@@ -453,6 +453,9 @@ fi
 
 
 %changelog
+
+* Fri Aug 30 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.4-7
+- Updated to 18.4
 
 * Tue Jun 25 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.3-7
 - Updated to 18.3
