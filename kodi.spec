@@ -9,7 +9,7 @@
 %global _fmt_version 3.0.1
 
 Name: kodi
-Version: 18.4
+Version: 18.5
 Release: 7%{dist}
 Epoch: 1
 Summary: Media center
@@ -453,6 +453,9 @@ fi
 
 
 %changelog
+
+* Fri Nov 22 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.5-7
+- Updated to 18.5
 
 * Fri Aug 30 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.4-7
 - Updated to 18.4
