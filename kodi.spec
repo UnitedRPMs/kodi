@@ -66,6 +66,7 @@ BuildRequires: faad2-devel
 %if 0%{?_with_internal_ffmpeg}
 BuildRequires: ffmpeg-devel >= 4.0
 %endif
+BuildRequires: libdrm-devel
 BuildRequires: flac-devel
 BuildRequires: flex
 BuildRequires: fontconfig-devel
