@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>tv.kodi.kodi</id>
+  
+  <name>kodi</name>
+  <summary>A software media player and entertainment hub for digital media</summary>
+  
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>LGPL-2.0-or-later</project_license>
+  
+  <description>
+    <p>
+      Kodi is a free cross-platform media-player jukebox and entertainment hub. Kodi can play a spectrum of of multimedia formats, and featuring playlist, audio visualizations, slideshow, and weather forecast functions, together third-party plugins.
+    </p>
+  </description>
+  
+  <launchable type="desktop-id">kodi.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://screenshots.debian.net/screenshots/000/013/655/large.png</image>
+    </screenshot>
+  </screenshots>
+</component>

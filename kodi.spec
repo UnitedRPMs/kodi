@@ -10,9 +10,9 @@
 
 Name: kodi
 Version: 18.5
-Release: 7%{dist}
+Release: 8%{dist}
 Epoch: 1
-Summary: Media center
+Summary: A software media player and entertainment hub for digital media
 
 License: GPLv2+ and GPLv3+ and LGPLv2+ and BSD and MIT
 # Main binary and all supporting files are GPLv2+/GPLv3+
@@ -23,6 +23,7 @@ Source0: https://github.com/xbmc/xbmc/archive/%{version}-%{codename}.tar.gz
 Source1: https://github.com/xbmc/FFmpeg/archive/4.0.4-%{codename}-18.4.tar.gz 
 Source2: kodi-snapshot
 Source3: http://mirrors.kodi.tv/build-deps/sources/fmt-%{_fmt_version}.tar.gz
+Source4: tv.kodi.kodi.metainfo.xml
 Patch: smb_fix.patch
 
 %global _with_libbluray 1
@@ -358,6 +359,9 @@ make install DESTDIR=%{buildroot}
 mkdir -p ${RPM_BUILD_ROOT}%{_mandir}/
 mv docs/manpages ${RPM_BUILD_ROOT}%{_mandir}/man1/
 
+# Appdata
+install -Dm 0644 %{S:4} %{buildroot}/%{_metainfodir}/tv.kodi.kodi.metainfo.xml
+
 # Mangling fix
 sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/bin/kodi-ps3remote
 sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/bin/kodi-send
@@ -418,7 +422,7 @@ fi
 %{_docdir}/kodi/LICENSE.md
 %{_docdir}/kodi/README.Linux.md
 %{_docdir}/kodi/version.txt
-
+%{_metainfodir}/tv.kodi.kodi.metainfo.xml
 
 %files tools-texturepacker
 %{_bindir}/TexturePacker
@@ -454,6 +458,9 @@ fi
 
 
 %changelog
+
+* Fri Apr 10 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.5-8
+- Rebuilt for libcdio
 
 * Fri Nov 22 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.5-7
 - Updated to 18.5
