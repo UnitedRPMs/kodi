@@ -1,30 +1,40 @@
+%define _legacy_common_support 1
+
+# Kodi still uses Python 2
+%global         PYTHON %{__python2}
+
 # Tips thanks to:
 # https://www.archlinux.org/packages/community/x86_64/kodi/
 # https://gitweb.gentoo.org/repo/gentoo.git/tree/media-tv/kodi
 %global  _firewalldpath   /usr/lib/firewalld/services
-%global codename Leia
 
 %global debug_package %{nil} 
 
-%global _fmt_version 3.0.1
+%global _fmt_version 5.1.0
+
+# Commit for kodi
+%global commit0 0d5d4e838ea7aaa8be734a2adecbce561843e630
+%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Name: kodi
-Version: 18.5
-Release: 8%{dist}
+Version: 18.6
+Release: 7%{dist}
 Epoch: 1
-Summary: A software media player and entertainment hub for digital media
+Summary: Media center
 
 License: GPLv2+ and GPLv3+ and LGPLv2+ and BSD and MIT
 # Main binary and all supporting files are GPLv2+/GPLv3+
 # Some supporting libraries use the LGPL / BSD / MIT license
 Group: Applications/Multimedia
 URL: http://www.kodi.tv/
-Source0: https://github.com/xbmc/xbmc/archive/%{version}-%{codename}.tar.gz
-Source1: https://github.com/xbmc/FFmpeg/archive/4.0.4-%{codename}-18.4.tar.gz 
+Source0: https://github.com/xbmc/xbmc/archive/%{commit0}.zip#/%{name}-%{shortcommit0}.tar.gz
+Source1: https://github.com/xbmc/FFmpeg/archive/4.0.4-Leia-18.4.tar.gz
 Source2: kodi-snapshot
 Source3: http://mirrors.kodi.tv/build-deps/sources/fmt-%{_fmt_version}.tar.gz
-Source4: tv.kodi.kodi.metainfo.xml
 Patch: smb_fix.patch
+Patch1: 17300.patch
+Patch4: cheat-sse-build.patch
+
 
 %global _with_libbluray 1
 %global _with_cwiid 1
@@ -44,6 +54,7 @@ ExcludeArch: ppc64
 
 BuildRequires: git
 BuildRequires: cmake
+BuildRequires: ninja-build
 BuildRequires: pkgconfig(xrandr)
 BuildRequires: SDL2-devel
 BuildRequires: SDL2_image-devel
@@ -136,7 +147,8 @@ BuildRequires: libvdpau-devel
 BuildRequires: libunistring-devel
 BuildRequires: libvorbis-devel
 %if 0%{?_with_wayland}
-BuildRequires: libwayland-client-devel
+BuildRequires: libwayland-client-devel waylandpp-devel Xkbcommon
+BuildRequires: pkgconfig(wayland-protocols)
 %endif
 BuildRequires: libxml2-devel
 BuildRequires: libxslt-devel
@@ -151,8 +163,13 @@ BuildRequires: nasm
 BuildRequires: pcre-devel
 BuildRequires: pixman-devel
 BuildRequires: pulseaudio-libs-devel
+BuildRequires: python-unversioned-command
 BuildRequires: python2-devel
-BuildRequires: python2-pillow
+BuildRequires: python2-pillow 
+
+#BuildRequires: python3-devel
+#BuildRequires: python3-pillow
+
 BuildRequires: sqlite-devel
 BuildRequires: swig
 BuildRequires: systemd-devel
@@ -182,6 +199,9 @@ BuildRequires: flatbuffers-devel
 BuildRequires: fstrcmp-devel
 BuildRequires: lcms2-devel
 BuildRequires: lirc-devel
+BuildRequires: pkgconfig(libupnp)
+BuildRequires: rapidjson-devel  
+BuildRequires: libdvdcss-devel
 
 Requires: google-roboto-fonts
 # need explicit requires for these packages
@@ -277,90 +297,49 @@ This package contains FirewallD files for Kodi.
 
 %prep
 
-%autosetup -n xbmc-%{version}-%{codename} -p1  
+%autosetup -n xbmc-%{commit0} -p1  
 
-# fmt fix
+# fmt external fix
+%if 0%{?_with_internal_fmt}
+echo "internal fmt"
+%else
 sed -i 's|-DCMAKE_INSTALL_LIBDIR=lib"|-DCMAKE_INSTALL_LIBDIR=%{_lib}|g' cmake/modules/FindFmt.cmake
+%endif
 
-# Python fix
-sed -i 's|PYTHON_LIB_PATH|%{python2_sitelib}|g' cmake/scripts/linux/Install.cmake
-
-# python2 fix
-mkdir -p "$HOME/bin/"
-ln -sfn /usr/bin/python2.7 $HOME/bin/python
-export PATH="$HOME/bin/:$PATH"
 
 %build
 
-# python2 fix
-export PATH="$HOME/bin/:$PATH"
-
-# https://bugs.gentoo.org/show_bug.cgi?id=606124
 cmake  -DCMAKE_INSTALL_PREFIX=/usr \
        -DCMAKE_INSTALL_LIBDIR=%{_libdir} \
        -DCMAKE_VERBOSE_MAKEFILE:BOOL=OFF \
-       -DCMAKE_RULE_MESSAGES:BOOL=OFF \
        -DENABLE_EVENTCLIENTS=ON \
-       -DENABLE_LDGOLD=OFF \
-       -DENABLE_ALSA=ON \
-       -DENABLE_AIRTUNES=ON \
-       -DENABLE_AVAHI=ON \
-       -DENABLE_BLUETOOTH=ON \
-       -DENABLE_BLURAY=ON \
-       -DENABLE_CCACHE=OFF \
-       -DENABLE_CEC=ON \
-       -DENABLE_DBUS=ON \
-       -DENABLE_DVDCSS=ON \
-       -DENABLE_INTERNAL_CROSSGUID=OFF \
-       -DENABLE_CAP=ON \
-       -DENABLE_LIRC=ON \
-       -DENABLE_MICROHTTPD=ON \
-       -DENABLE_MYSQLCLIENT=ON \
-       -DENABLE_NFS=ON \
-       -DENABLE_NONFREE=ON \
-       -DENABLE_OPENGLES=ON \
-       -DENABLE_OPENGL=ON \
-       -DENABLE_OPENSSL=ON \
-       -DENABLE_OPTICAL=ON \
-       -DENABLE_PLIST=ON \
-       -DENABLE_PULSEAUDIO=ON \
-       -DENABLE_SMBCLIENT=ON \
-       -DENABLE_SSH=ON \
-       -DENABLE_UDEV=ON \
-       -DENABLE_UPNP=ON \
-       -DENABLE_VAAPI=ON \
-       -DENABLE_VDPAU=ON \
-       -DENABLE_X11=ON \
+       -DENABLE_INTERNAL_CROSSGUID=ON \
+       -DENABLE_INTERNAL_FLATBUFFERS=ON \
+       -DPYTHON_EXECUTABLE=%{__python2} \
 %if 0%{?_with_internal_ffmpeg}
-       -DWITH_FFMPEG="yes" \
-       -DENABLE_INTERNAL_FFMPEG="no" \
+       -DENABLE_INTERNAL_FFMPEG=OFF \
 %else
        -DFFMPEG_URL=%{S:1} \
-       -DENABLE_INTERNAL_FFMPEG="yes" \
+       -DENABLE_INTERNAL_FFMPEG=ON \
 %endif
        -DVERBOSE=0 \
 %if 0%{?_with_internal_fmt}
-       -DFMT_URL=%{S:3} \
        -DENABLE_INTERNAL_FMT=ON \
 %endif
        -DENABLE_XSLT=ON .
 
-make %{?_smp_mflags} VERBOSE=0
+make VERBOSE=0
 echo 'DONE MAKE'
  
 make preinstall VERBOSE=0
 echo 'DONE MAKE PREINSTALL'
 
 %install
-make install DESTDIR=%{buildroot} 
-
+make install DESTDIR=%{buildroot}
 
 # Move man-pages into system dir
 mkdir -p ${RPM_BUILD_ROOT}%{_mandir}/
 mv docs/manpages ${RPM_BUILD_ROOT}%{_mandir}/man1/
-
-# Appdata
-install -Dm 0644 %{S:4} %{buildroot}/%{_metainfodir}/tv.kodi.kodi.metainfo.xml
 
 # Mangling fix
 sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/bin/kodi-ps3remote
@@ -422,7 +401,7 @@ fi
 %{_docdir}/kodi/LICENSE.md
 %{_docdir}/kodi/README.Linux.md
 %{_docdir}/kodi/version.txt
-%{_metainfodir}/tv.kodi.kodi.metainfo.xml
+
 
 %files tools-texturepacker
 %{_bindir}/TexturePacker
@@ -459,8 +438,8 @@ fi
 
 %changelog
 
-* Fri Apr 10 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.5-8
-- Rebuilt for libcdio
+* Sat Feb 29 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.6-7
+- Updated to 18.6
 
 * Fri Nov 22 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.5-7
 - Updated to 18.5
