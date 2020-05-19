@@ -18,7 +18,7 @@
 
 Name: kodi
 Version: 18.6
-Release: 7%{dist}
+Release: 8%{dist}
 Epoch: 1
 Summary: Media center
 
@@ -26,11 +26,12 @@ License: GPLv2+ and GPLv3+ and LGPLv2+ and BSD and MIT
 # Main binary and all supporting files are GPLv2+/GPLv3+
 # Some supporting libraries use the LGPL / BSD / MIT license
 Group: Applications/Multimedia
-URL: http://www.kodi.tv/
+URL: https://www.kodi.tv/
 Source0: https://github.com/xbmc/xbmc/archive/%{commit0}.zip#/%{name}-%{shortcommit0}.tar.gz
 Source1: https://github.com/xbmc/FFmpeg/archive/4.0.4-Leia-18.4.tar.gz
 Source2: kodi-snapshot
 Source3: http://mirrors.kodi.tv/build-deps/sources/fmt-%{_fmt_version}.tar.gz
+Source4: tv.kodi.kodi.metainfo.xml 
 Patch: smb_fix.patch
 Patch1: 17300.patch
 Patch4: cheat-sse-build.patch
@@ -341,6 +342,9 @@ make install DESTDIR=%{buildroot}
 mkdir -p ${RPM_BUILD_ROOT}%{_mandir}/
 mv docs/manpages ${RPM_BUILD_ROOT}%{_mandir}/man1/
 
+# Metainfo
+install -Dm 0644 %{S:4} %{buildroot}/%{_metainfodir}/tv.kodi.kodi.metainfo.xml
+
 # Mangling fix
 sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/bin/kodi-ps3remote
 sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/bin/kodi-send
@@ -401,7 +405,7 @@ fi
 %{_docdir}/kodi/LICENSE.md
 %{_docdir}/kodi/README.Linux.md
 %{_docdir}/kodi/version.txt
-
+%{_metainfodir}/tv.kodi.kodi.metainfo.xml
 
 %files tools-texturepacker
 %{_bindir}/TexturePacker
@@ -437,6 +441,9 @@ fi
 
 
 %changelog
+
+* Mon May 18 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.6-8
+- Added metainfo
 
 * Sat Feb 29 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.6-7
 - Updated to 18.6
