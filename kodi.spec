@@ -77,7 +77,7 @@ BuildRequires: enca-devel
 BuildRequires: expat-devel
 BuildRequires: faad2-devel
 %if 0%{?_with_internal_ffmpeg}
-BuildRequires: ffmpeg-devel >= 4.0
+BuildRequires: ffmpeg-devel >= 4.2.3
 %endif
 BuildRequires: libdrm-devel
 BuildRequires: flac-devel
