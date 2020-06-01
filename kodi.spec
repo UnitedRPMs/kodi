@@ -10,14 +10,14 @@
 
 %global debug_package %{nil} 
 
-%global _fmt_version 5.1.0
+%global _fmt_version 6.1.2
 
 # Commit for kodi
-%global commit0 f14f7a84e3b565ef221022612a24155d6f372c4a
+%global commit0 8f9ff4c11f7f8acdf609484d61b82b25f875c21a
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Name: kodi
-Version: 18.7
+Version: 18.7.1
 Release: 7%{dist}
 Epoch: 1
 Summary: Media center
@@ -441,6 +441,9 @@ fi
 
 
 %changelog
+
+* Sun May 31 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.7.1-7
+- Updated to 18.7.1
 
 * Thu May 21 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.7-7
 - Updated to 18.7
