@@ -18,7 +18,7 @@
 
 Name: kodi
 Version: 18.7.1
-Release: 7%{dist}
+Release: 8%{dist}
 Epoch: 1
 Summary: Media center
 
@@ -77,7 +77,7 @@ BuildRequires: enca-devel
 BuildRequires: expat-devel
 BuildRequires: faad2-devel
 %if 0%{?_with_internal_ffmpeg}
-BuildRequires: ffmpeg-devel >= 4.2.3
+BuildRequires: ffmpeg-devel >= 4.3
 %endif
 BuildRequires: libdrm-devel
 BuildRequires: flac-devel
@@ -441,6 +441,9 @@ fi
 
 
 %changelog
+
+* Tue Jun 23 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.7.1-8
+- Rebuilt for ffmpeg
 
 * Sun May 31 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.7.1-7
 - Updated to 18.7.1
