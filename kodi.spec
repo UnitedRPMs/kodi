@@ -13,12 +13,12 @@
 %global _fmt_version 6.1.2
 
 # Commit for kodi
-%global commit0 8f9ff4c11f7f8acdf609484d61b82b25f875c21a
+%global commit0 45686bddb1f308ec580f97eb4b228b8a6606b320
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Name: kodi
-Version: 18.7.1
-Release: 8%{dist}
+Version: 18.8
+Release: 7%{dist}
 Epoch: 1
 Summary: Media center
 
@@ -28,7 +28,7 @@ License: GPLv2+ and GPLv3+ and LGPLv2+ and BSD and MIT
 Group: Applications/Multimedia
 URL: https://www.kodi.tv/
 Source0: https://github.com/xbmc/xbmc/archive/%{commit0}.zip#/%{name}-%{shortcommit0}.tar.gz
-Source1: https://github.com/xbmc/FFmpeg/archive/4.2.2-Matrix-Alpha1.tar.gz
+Source1: https://github.com/xbmc/FFmpeg/archive/4.3.1-Matrix-Alpha1-1.tar.gz
 Source2: kodi-snapshot
 Source3: http://mirrors.kodi.tv/build-deps/sources/fmt-%{_fmt_version}.tar.gz
 Source4: tv.kodi.kodi.metainfo.xml 
@@ -441,6 +441,9 @@ fi
 
 
 %changelog
+
+* Tue Jul 28 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.8-7
+- Updated to 18.8
 
 * Tue Jun 23 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.7.1-8
 - Rebuilt for ffmpeg
