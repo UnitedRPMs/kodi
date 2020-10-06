@@ -18,7 +18,7 @@
 
 Name: kodi
 Version: 18.8
-Release: 7%{dist}
+Release: 9%{dist}
 Epoch: 1
 Summary: Media center
 
@@ -441,6 +441,9 @@ fi
 
 
 %changelog
+
+* Mon Oct 05 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.8-9
+- Rebuilt
 
 * Tue Jul 28 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.8-7
 - Updated to 18.8
