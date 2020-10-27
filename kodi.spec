@@ -13,12 +13,12 @@
 %global _fmt_version 6.1.2
 
 # Commit for kodi
-%global commit0 45686bddb1f308ec580f97eb4b228b8a6606b320
+%global commit0 0655c2c71821567e4c21c1c5a508a39ab72f0ef1
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Name: kodi
-Version: 18.8
-Release: 9%{dist}
+Version: 18.9
+Release: 7%{dist}
 Epoch: 1
 Summary: Media center
 
@@ -441,6 +441,12 @@ fi
 
 
 %changelog
+
+* Sun Oct 25 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.9-7
+- Updated to 18.9
+
+* Mon Oct 05 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.8-9
+- Rebuilt
 
 * Mon Oct 05 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.8-9
 - Rebuilt
