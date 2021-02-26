@@ -1,7 +1,9 @@
 %define _legacy_common_support 1
 
-# Kodi still uses Python 2
-%global         PYTHON %{__python2}
+%global         PYTHON %{__python3}
+%global		LIBDVDCSS_VERSION 1.4.2-Leia-Beta-5
+%global		LIBDVDREAD_VERSION 6.0.0-Leia-Alpha-3
+%global		LIBDVDNAV_VERSION 6.0.0-Leia-Alpha-3
 
 # Tips thanks to:
 # https://www.archlinux.org/packages/community/x86_64/kodi/
@@ -13,11 +15,11 @@
 %global _fmt_version 6.1.2
 
 # Commit for kodi
-%global commit0 0655c2c71821567e4c21c1c5a508a39ab72f0ef1
+%global commit0 f44fdfbf675f30c01e7639177a34544e6a6b9dad
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Name: kodi
-Version: 18.9
+Version: 19.0
 Release: 7%{dist}
 Epoch: 1
 Summary: Media center
@@ -28,12 +30,15 @@ License: GPLv2+ and GPLv3+ and LGPLv2+ and BSD and MIT
 Group: Applications/Multimedia
 URL: https://www.kodi.tv/
 Source0: https://github.com/xbmc/xbmc/archive/%{commit0}.zip#/%{name}-%{shortcommit0}.tar.gz
-Source1: https://github.com/xbmc/FFmpeg/archive/4.3.1-Matrix-Alpha1-1.tar.gz
+Source1: https://github.com/xbmc/FFmpeg/archive/4.3.1-Matrix-Beta1.tar.gz
 Source2: kodi-snapshot
 Source3: http://mirrors.kodi.tv/build-deps/sources/fmt-%{_fmt_version}.tar.gz
 Source4: tv.kodi.kodi.metainfo.xml 
+Source5: https://github.com/xbmc/libdvdcss/archive/%{LIBDVDCSS_VERSION}.tar.gz#/libdvdcss-%{LIBDVDCSS_VERSION}.tar.gz
+Source6: https://github.com/xbmc/libdvdread/archive/%{LIBDVDREAD_VERSION}.tar.gz#/libdvdread-%{LIBDVDREAD_VERSION}.tar.gz
+Source7: https://github.com/xbmc/libdvdnav/archive/%{LIBDVDNAV_VERSION}.tar.gz#/libdvdnav-%{LIBDVDNAV_VERSION}.tar.gz
 Patch: smb_fix.patch
-Patch1: 17300.patch
+#Patch1: 17300.patch
 Patch4: cheat-sse-build.patch
 
 
@@ -164,12 +169,8 @@ BuildRequires: nasm
 BuildRequires: pcre-devel
 BuildRequires: pixman-devel
 BuildRequires: pulseaudio-libs-devel
-BuildRequires: python-unversioned-command
-BuildRequires: python2-devel
-BuildRequires: python2-pillow 
-
-#BuildRequires: python3-devel
-#BuildRequires: python3-pillow
+BuildRequires: python3-devel
+BuildRequires: python3-pillow 
 
 BuildRequires: sqlite-devel
 BuildRequires: swig
@@ -203,6 +204,19 @@ BuildRequires: lirc-devel
 BuildRequires: pkgconfig(libupnp)
 BuildRequires: rapidjson-devel  
 BuildRequires: libdvdcss-devel
+BuildRequires: spdlog-devel
+BuildRequires: pkgconfig(xkbcommon)
+BuildRequires: pkgconfig(gbm)
+BuildRequires: pkgconfig(libinput)
+BuildRequires: libudfread-devel 
+BuildRequires: libdav1d-devel
+BuildRequires: gtest-devel doxygen
+BuildRequires: ninja-build
+# Wayland
+BuildRequires: wayland-devel
+BuildRequires: waylandpp-devel
+BuildRequires: pkgconfig(wayland-protocols)
+BuildRequires: pkgconfig(wayland-scanner)
 
 Requires: google-roboto-fonts
 # need explicit requires for these packages
@@ -228,7 +242,7 @@ Requires: xorg-x11-utils
 
 # This is just symlinked to, but needed both at build-time
 # and for installation
-Requires: python2-pillow%{?_isa}
+Requires: python3-pillow%{?_isa}
 Provides: %{name} = %{epoch}:%{version}-%{release}
 Provides: %{name}%{?_isa} = %{version}-%{release}
 
@@ -307,16 +321,25 @@ echo "internal fmt"
 sed -i 's|-DCMAKE_INSTALL_LIBDIR=lib"|-DCMAKE_INSTALL_LIBDIR=%{_lib}|g' cmake/modules/FindFmt.cmake
 %endif
 
+# avoid long delays when powerkit isn't running 
+	sed -i \
+		-e '/dbus_connection_send_with_reply_and_block/s:-1:3000:' \
+		xbmc/platform/linux/*.cpp
+		
+	# Prevent autoreconf rerun
+	sed -e 's/autoreconf -vif/echo "autoreconf already done in src_prepare()"/' -i \
+		$PWD/tools/depends/native/TexturePacker/src/autogen.sh \
+		$PWD/tools/depends/native/JsonSchemaBuilder/src/autogen.sh 
 
 %build
+cp -f %{S:5} %{S:6} %{S:7} $PWD/
 
-cmake  -DCMAKE_INSTALL_PREFIX=/usr \
+cmake -DCMAKE_INSTALL_PREFIX=/usr \
        -DCMAKE_INSTALL_LIBDIR=%{_libdir} \
        -DCMAKE_VERBOSE_MAKEFILE:BOOL=OFF \
        -DENABLE_EVENTCLIENTS=ON \
        -DENABLE_INTERNAL_CROSSGUID=ON \
-       -DENABLE_INTERNAL_FLATBUFFERS=ON \
-       -DPYTHON_EXECUTABLE=%{__python2} \
+       -DPYTHON_EXECUTABLE=%{__python3} \
 %if 0%{?_with_internal_ffmpeg}
        -DENABLE_INTERNAL_FFMPEG=OFF \
 %else
@@ -327,16 +350,26 @@ cmake  -DCMAKE_INSTALL_PREFIX=/usr \
 %if 0%{?_with_internal_fmt}
        -DENABLE_INTERNAL_FMT=ON \
 %endif
-       -DENABLE_XSLT=ON .
+       -DENABLE_XSLT=ON \
+       -DAPP_RENDER_SYSTEM=gl \
+       -DENABLE_MDNS=OFF \
+       -DENABLE_SNDIO=OFF \
+       -DENABLE_INTERNAL_FLATBUFFERS=OFF \
+       -Dlibdvdnav_URL=libdvdnav-%{LIBDVDNAV_VERSION}.tar.gz \
+       -Dlibdvdread_URL=libdvdread-%{LIBDVDREAD_VERSION}.tar.gz \
+       -Dlibdvdcss_URL=libdvdcss-%{LIBDVDCSS_VERSION}.tar.gz \
+       %if 0%{?fedora} <= 31
+       -DENABLE_INTERNAL_SPDLOG=ON \
+       %endif
+       -GNinja \
+       -Wno-dev .
 
-make VERBOSE=0
-echo 'DONE MAKE'
- 
-make preinstall VERBOSE=0
-echo 'DONE MAKE PREINSTALL'
+#       
+%ninja_build
+echo 'DONE Ninja build'
 
 %install
-make install DESTDIR=%{buildroot}
+%ninja_install
 
 # Move man-pages into system dir
 mkdir -p ${RPM_BUILD_ROOT}%{_mandir}/
@@ -346,32 +379,32 @@ mv docs/manpages ${RPM_BUILD_ROOT}%{_mandir}/man1/
 install -Dm 0644 %{S:4} %{buildroot}/%{_metainfodir}/tv.kodi.kodi.metainfo.xml
 
 # Mangling fix
-sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/bin/kodi-ps3remote
-sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/bin/kodi-send
-sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_button2.py
-sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_notification.py
-sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_mouse.py
-sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_action.py
-sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_button1.py
-sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_simple.py
-sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/%{python2_sitelib}/kodi/ps3/sixpair.py
-sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/%{python2_sitelib}/kodi/ps3/sixaxis.py
-sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/%{python2_sitelib}/kodi/ps3/sixwatch.py
-sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/%{python2_sitelib}/kodi/xbmcclient.py
-sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/%{python2_sitelib}/kodi/zeroconf.py
-sed -i 's|usr/bin/python|usr/bin/python2|g' %{buildroot}/%{python2_sitelib}/kodi/ps3_remote.py
-sed -i 's|/usr/bin/env python|/usr/bin/python2|g' %{buildroot}/%{python2_sitelib}/kodi/zeroconf.py
+sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/usr/bin/kodi-ps3remote
+sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/usr/bin/kodi-send
+sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_button2.py
+sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_notification.py
+sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_mouse.py
+sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_action.py
+sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_button1.py
+sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_simple.py
+sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/%{python3_sitelib}/kodi/ps3/sixpair.py
+sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/%{python3_sitelib}/kodi/ps3/sixaxis.py
+sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/%{python3_sitelib}/kodi/ps3/sixwatch.py
+sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/%{python3_sitelib}/kodi/xbmcclient.py
+sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/%{python3_sitelib}/kodi/zeroconf.py
+sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/%{python3_sitelib}/kodi/ps3_remote.py
+sed -i 's|/usr/bin/env python|/usr/bin/python3|g' %{buildroot}/%{python3_sitelib}/kodi/zeroconf.py
 
 sed -i 's|/bin/sh|/usr/bin/sh|g' %{buildroot}/usr/bin/kodi
 sed -i 's|/bin/sh|/usr/bin/sh|g' %{buildroot}/usr/bin/kodi-standalone
 
-sed -i '1 i\#!/usr/bin/python2'  %{buildroot}/%{python2_sitelib}/kodi/bt/__init__.py
-sed -i '1 i\#!/usr/bin/python2'  %{buildroot}/%{python2_sitelib}/kodi/bt/bt.py
-sed -i '1 i\#!/usr/bin/python2'  %{buildroot}/%{python2_sitelib}/kodi/bt/hid.py
-sed -i '1 i\#!/usr/bin/python2'  %{buildroot}/%{python2_sitelib}/kodi/ps3/__init__.py
-sed -i '1 i\#!/usr/bin/python2'  %{buildroot}/%{python2_sitelib}/kodi/ps3/keymaps.py
-sed -i '1 i\#!/usr/bin/python2'  %{buildroot}/%{python2_sitelib}/kodi/__init__.py
-sed -i '1 i\#!/usr/bin/python2'  %{buildroot}/%{python2_sitelib}/kodi/defs.py
+sed -i '1 i\#!/usr/bin/python3'  %{buildroot}/%{python3_sitelib}/kodi/bt/__init__.py
+sed -i '1 i\#!/usr/bin/python3'  %{buildroot}/%{python3_sitelib}/kodi/bt/bt.py
+sed -i '1 i\#!/usr/bin/python3'  %{buildroot}/%{python3_sitelib}/kodi/bt/hid.py
+sed -i '1 i\#!/usr/bin/python3'  %{buildroot}/%{python3_sitelib}/kodi/ps3/__init__.py
+sed -i '1 i\#!/usr/bin/python3'  %{buildroot}/%{python3_sitelib}/kodi/ps3/keymaps.py
+sed -i '1 i\#!/usr/bin/python3'  %{buildroot}/%{python3_sitelib}/kodi/__init__.py
+sed -i '1 i\#!/usr/bin/python3'  %{buildroot}/%{python3_sitelib}/kodi/defs.py
 
 %post
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
@@ -394,6 +427,7 @@ fi
 %doc docs
 %{_bindir}/kodi
 %{_bindir}/kodi-standalone
+%{_bindir}/JsonSchemaBuilder
 %{_libdir}/kodi
 %{_datadir}/kodi
 %{_datadir}/xsessions/kodi.desktop
@@ -402,10 +436,12 @@ fi
 %{_mandir}/man1/kodi.1.gz
 %{_mandir}/man1/kodi.bin.1.gz
 %{_mandir}/man1/kodi-standalone.1.gz
+%{_mandir}/man1/TexturePacker.1.gz
 %{_docdir}/kodi/LICENSE.md
 %{_docdir}/kodi/README.Linux.md
 %{_docdir}/kodi/version.txt
 %{_metainfodir}/tv.kodi.kodi.metainfo.xml
+
 
 %files tools-texturepacker
 %{_bindir}/TexturePacker
@@ -417,7 +453,7 @@ fi
 
 %files eventclients
 %license LICENSES/GPL-2.0-or-later LICENSES/LGPL-2.1-or-later LICENSES/BSD-3-Clause LICENSES/BSD-4-Clause LICENSES/MIT LICENSE.md
-%{python2_sitelib}/kodi
+%{python3_sitelib}/kodi
 %dir %{_datadir}/pixmaps/kodi
 %{_datadir}/pixmaps/kodi/*.png
 %{_bindir}/kodi-ps3remote
@@ -441,6 +477,9 @@ fi
 
 
 %changelog
+
+* Fri Feb 19 2021 Unitedrpms Project <unitedrpms AT protonmail DOT com> 19.0-7
+- Updated to 19.0
 
 * Sun Oct 25 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 18.9-7
 - Updated to 18.9
