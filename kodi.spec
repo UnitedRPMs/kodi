@@ -381,21 +381,6 @@ mv docs/manpages ${RPM_BUILD_ROOT}%{_mandir}/man1/
 install -Dm 0644 %{S:4} %{buildroot}/%{_metainfodir}/tv.kodi.kodi.metainfo.xml
 
 # Mangling fix
-sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/usr/bin/kodi-ps3remote
-sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/usr/bin/kodi-send
-sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_button2.py
-sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_notification.py
-sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_mouse.py
-sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_action.py
-sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_button1.py
-sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/usr/share/doc/kodi/kodi-eventclients-dev/examples/python/example_simple.py
-sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/%{python3_sitelib}/kodi/ps3/sixpair.py
-sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/%{python3_sitelib}/kodi/ps3/sixaxis.py
-sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/%{python3_sitelib}/kodi/ps3/sixwatch.py
-sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/%{python3_sitelib}/kodi/xbmcclient.py
-sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/%{python3_sitelib}/kodi/zeroconf.py
-sed -i 's|usr/bin/python|usr/bin/python3|g' %{buildroot}/%{python3_sitelib}/kodi/ps3_remote.py
-sed -i 's|/usr/bin/env python|/usr/bin/python3|g' %{buildroot}/%{python3_sitelib}/kodi/zeroconf.py
 
 sed -i 's|/bin/sh|/usr/bin/sh|g' %{buildroot}/usr/bin/kodi
 sed -i 's|/bin/sh|/usr/bin/sh|g' %{buildroot}/usr/bin/kodi-standalone
