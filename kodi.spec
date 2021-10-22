@@ -15,11 +15,11 @@
 %global _fmt_version 6.1.2
 
 # Commit for kodi
-%global commit0 85e05228b447e587291cd84211ea019afd00d794
+%global commit0 52c19a0728723d1b568e47042b36105fdc3b7e68
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Name: kodi
-Version: 19.1
+Version: 19.2
 Release: 7%{dist}
 Epoch: 1
 Summary: Media center
@@ -30,7 +30,7 @@ License: GPLv2+ and GPLv3+ and LGPLv2+ and BSD and MIT
 Group: Applications/Multimedia
 URL: https://www.kodi.tv/
 Source0: https://github.com/xbmc/xbmc/archive/%{commit0}.zip#/%{name}-%{shortcommit0}.tar.gz
-Source1: https://github.com/xbmc/FFmpeg/archive/refs/tags/4.4-N-Alpha1.tar.gz
+Source1: https://github.com/xbmc/FFmpeg/archive/refs/tags/4.3.2-Matrix-19.2.tar.gz
 Source2: kodi-snapshot
 Source3: http://mirrors.kodi.tv/build-deps/sources/fmt-%{_fmt_version}.tar.gz
 Source4: tv.kodi.kodi.metainfo.xml 
@@ -47,7 +47,7 @@ Patch4: cheat-sse-build.patch
 %global _with_libssh 1
 %global _with_libcec 1
 %global _with_internal_ffmpeg 0
-%global _with_internal_fmt 1
+%global _with_internal_fmt 0
 %global _with_wayland 0
 
 
@@ -338,6 +338,9 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.11.0.9-2.fc35.x86_64/
 
 cmake -DCMAKE_INSTALL_PREFIX=/usr \
        -DCMAKE_INSTALL_LIBDIR=%{_libdir} \
+       -DCMAKE_AR=%{_bindir}/gcc-ar \
+       -DCMAKE_RANLIB=%{_bindir}/gcc-ranlib \
+       -DCMAKE_NM=%{_bindir}/gcc-nm \
        -DCMAKE_VERBOSE_MAKEFILE:BOOL=OFF \
        -DENABLE_EVENTCLIENTS=ON \
        -DENABLE_INTERNAL_CROSSGUID=ON \
@@ -464,6 +467,9 @@ fi
 
 
 %changelog
+
+* Fri Oct 22 2021 Unitedrpms Project <unitedrpms AT protonmail DOT com> 19.2-7
+- Updated to 19.2
 
 * Tue May 11 2021 Unitedrpms Project <unitedrpms AT protonmail DOT com> 19.1-7
 - Updated to 19.1
