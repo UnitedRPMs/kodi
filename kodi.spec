@@ -15,11 +15,11 @@
 %global _fmt_version 6.1.2
 
 # Commit for kodi
-%global commit0 52c19a0728723d1b568e47042b36105fdc3b7e68
+%global commit0 49a04cd6a7f49ea9a0f05c492b11a3ba7c542a99
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Name: kodi
-Version: 19.2
+Version: 19.3
 Release: 7%{dist}
 Epoch: 1
 Summary: Media center
@@ -100,7 +100,12 @@ BuildRequires: glew-devel
 BuildRequires: glib2-devel
 BuildRequires: gperf
 BuildRequires: jasper-devel
+%if 0%{?fedora} <= 32
+BuildRequires: java-1.8.0-openjdk-devel
+BuildRequires: java-11-openjdk-devel
+%else
 BuildRequires: java-devel 
+%endif
 BuildRequires: lame-devel
 BuildRequires: libXinerama-devel
 BuildRequires: libXmu-devel
@@ -334,7 +339,8 @@ sed -i 's|-DCMAKE_INSTALL_LIBDIR=lib"|-DCMAKE_INSTALL_LIBDIR=%{_lib}|g' cmake/mo
 %build
 cp -f %{S:5} %{S:6} %{S:7} $PWD/
 
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.11.0.9-2.fc35.x86_64/
+#export PATH="$PATH:/usr/lib/jvm/java-1.8.0/bin/"
+#export JAVA_HOME="/usr/lib/jvm/java-1.8.0/"
 
 cmake -DCMAKE_INSTALL_PREFIX=/usr \
        -DCMAKE_INSTALL_LIBDIR=%{_libdir} \
@@ -430,7 +436,7 @@ fi
 %{_docdir}/kodi/LICENSE.md
 %{_docdir}/kodi/README.Linux.md
 %{_docdir}/kodi/version.txt
-%{_metainfodir}/tv.kodi.kodi.metainfo.xml
+%{_metainfodir}/*.xml
 
 
 %files tools-texturepacker
@@ -467,6 +473,9 @@ fi
 
 
 %changelog
+
+* Fri Nov 12 2021 Unitedrpms Project <unitedrpms AT protonmail DOT com> 19.3-7
+- Updated to 19.3
 
 * Fri Oct 22 2021 Unitedrpms Project <unitedrpms AT protonmail DOT com> 19.2-7
 - Updated to 19.2
