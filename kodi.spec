@@ -20,7 +20,7 @@
 
 Name: kodi
 Version: 19.3
-Release: 7%{dist}
+Release: 8%{dist}
 Epoch: 1
 Summary: Media center
 
@@ -82,7 +82,7 @@ BuildRequires: enca-devel
 BuildRequires: expat-devel
 BuildRequires: faad2-devel
 %if 0%{?_with_internal_ffmpeg}
-BuildRequires: ffmpeg-devel >= 4.3
+BuildRequires: ffmpeg-devel >= 5.0
 %endif
 BuildRequires: libdrm-devel
 BuildRequires: flac-devel
@@ -473,6 +473,9 @@ fi
 
 
 %changelog
+
+* Wed Feb 02 2022 Unitedrpms Project <unitedrpms AT protonmail DOT com> 19.3-8
+- Rebuilt for ffmpeg
 
 * Fri Nov 12 2021 Unitedrpms Project <unitedrpms AT protonmail DOT com> 19.3-7
 - Updated to 19.3
