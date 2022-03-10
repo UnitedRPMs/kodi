@@ -12,15 +12,15 @@
 
 %global debug_package %{nil} 
 
-%global _fmt_version 6.1.2
+%global _fmt_version 8.0.1
 
 # Commit for kodi
-%global commit0 49a04cd6a7f49ea9a0f05c492b11a3ba7c542a99
+%global commit0 e12e66e019af29ba9d5f5a2614315b15a138b81a
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Name: kodi
-Version: 19.3
-Release: 8%{dist}
+Version: 19.4
+Release: 7%{dist}
 Epoch: 1
 Summary: Media center
 
@@ -473,6 +473,9 @@ fi
 
 
 %changelog
+
+* Sun Mar 06 2022 Unitedrpms Project <unitedrpms AT protonmail DOT com> 19.4-7
+- Updated to 19.4
 
 * Wed Feb 02 2022 Unitedrpms Project <unitedrpms AT protonmail DOT com> 19.3-8
 - Rebuilt for ffmpeg
